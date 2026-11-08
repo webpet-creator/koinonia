@@ -1,0 +1,3 @@
+# GitHub Pages : le registre des traitements est un document interne, il n'est pas publié.
+exclude:
+  - registre-traitements.md

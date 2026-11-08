@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Koinonia – Prions ensemble</title>
+<meta name="description" content="Koinonia, l'application chrétienne pour prier les uns pour les autres, tenir le journal de son aventure spirituelle et confier en privé ce pour quoi on demande pardon. Gratuite, sans publicité.">
+<link rel="icon" href="img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Lora:wght@600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<!--
+  LIEN DE TÉLÉCHARGEMENT : un seul endroit à changer, l'attribut href des liens de classe "dl".
+  Il pointe vers la dernière version publiée dans les « Releases » GitHub du dépôt webpet-creator/koinonia.
+  Le fichier joint à chaque Release doit toujours s'appeler koinonia.apk.
+-->
+<style>
+  :root {
+    color-scheme: light;
+    --surface: #FBF4EA; --card: #FFFDF8; --border: #EBDCCB; --volute: #F1DFCD;
+    --ink: #4A3528; --muted: #7A6352; --argile: #7A4B35; --on-argile: #FFFFFF;
+    --fil: #B4533A; --ocre: #D9A441; --sable: #F3E6D6; --miel: #F8E6C8; --postit: #F6DDB3; --sauge: #5E6E45;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface: #1E1915; --card: #2A231D; --border: #3A3129; --volute: #2E2620;
+      --ink: #F3E9DD; --muted: #C2AF9E; --argile: #E0B79C; --on-argile: #1E1915;
+      --fil: #E39A86; --ocre: #E8BC62; --sable: #352C24; --miel: #3D3122; --postit: #4A3A22; --sauge: #A9BC8C;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--surface); color: var(--ink); font: 17px/1.6 "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow-x: hidden; }
+  img { max-width: 100%; display: block; }
+  a { color: var(--argile); }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+  h1, h2, h3 { font-family: "Lora", Georgia, serif; font-weight: 600; line-height: 1.25; margin: 0; text-wrap: balance; }
+  h2 { font-size: clamp(26px, 4vw, 34px); margin-bottom: 8px; }
+  h3 { font-size: 20px; margin-bottom: 6px; }
+  p { margin: 0 0 12px; }
+  .hand { font-family: "Caveat", cursive; font-weight: 600; color: var(--fil); font-size: 24px; line-height: 1.1; }
+  .muted { color: var(--muted); }
+  section { padding: 56px 0; }
+  .lead { color: var(--muted); max-width: 60ch; margin-bottom: 28px; }
+
+  /* En-tête */
+  header { padding-top: 20px; padding-bottom: 8px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font-family: "Lora", Georgia, serif; font-weight: 600; font-size: 22px; }
+  .brand img { width: 40px; height: 40px; border-radius: 10px; }
+
+  /* Accueil */
+  .hero { display: grid; gap: 32px; align-items: center; padding-top: 24px; padding-bottom: 48px; }
+  .hero h1 { font-size: clamp(36px, 7vw, 56px); margin: 6px 0 16px; }
+  .hero p.intro { font-size: 19px; max-width: 34ch; }
+  .hero-art { position: relative; max-width: 240px; justify-self: center; }
+  .hero-art .halo { position: absolute; inset: -5% -4%; background: var(--volute); border-radius: 46% 54% 50% 50% / 55% 45% 55% 45%; z-index: 0; }
+  .hero-art img { position: relative; z-index: 1; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 18px 40px -24px rgba(74, 53, 40, .55); }
+  @media (min-width: 760px) { .hero { grid-template-columns: 1.15fr .85fr; padding-top: 48px; } .hero-art { max-width: 340px; } }
+
+  .btn { display: inline-flex; align-items: center; gap: 10px; background: var(--argile); color: var(--on-argile); text-decoration: none; font-weight: 700; font-size: 18px; padding: 15px 24px; border-radius: 999px; min-height: 52px; }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:focus-visible, a:focus-visible { outline: 3px solid var(--ocre); outline-offset: 3px; }
+  .btn svg { width: 22px; height: 22px; flex: none; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .chip { background: var(--sable); color: var(--ink); border-radius: 999px; padding: 4px 12px; font-size: 14px; font-weight: 600; }
+
+  /* Installation */
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; counter-reset: s; }
+  @media (min-width: 760px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  .steps li { counter-increment: s; position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px 18px 18px 64px; }
+  .steps li::before { content: counter(s); position: absolute; left: 16px; top: 16px; width: 34px; height: 34px; border-radius: 50%; background: var(--ocre); color: #4A3528; font-weight: 700; display: grid; place-items: center; }
+  .steps strong { display: block; margin-bottom: 2px; }
+  .steps p { margin: 0; color: var(--muted); font-size: 16px; }
+  .note { background: var(--miel); border-radius: 16px; padding: 14px 18px; margin-top: 18px; font-size: 16px; }
+
+  /* Piliers : le mur d'enquêteur */
+  .board { position: relative; display: grid; gap: 28px; margin-top: 8px; }
+  @media (min-width: 760px) { .board { grid-template-columns: repeat(3, 1fr); gap: 24px; } }
+  .board svg.string { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; display: none; }
+  @media (min-width: 760px) { .board svg.string { display: block; } }
+  .pin { position: relative; z-index: 1; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px 14px 18px; box-shadow: 0 10px 24px -18px rgba(74, 53, 40, .6); }
+  .pin:nth-child(2) { transform: rotate(-1.2deg); }
+  .pin:nth-child(3) { transform: rotate(1deg); background: var(--postit); }
+  .pin:nth-child(4) { transform: rotate(-.6deg); }
+  .pin::before { content: ""; position: absolute; top: -8px; left: 50%; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--ocre); box-shadow: inset -3px -3px 0 rgba(0,0,0,.15); }
+  .pin img { border-radius: 4px; margin-bottom: 14px; aspect-ratio: 400 / 330; object-fit: cover; object-position: top; width: 100%; }
+  .pin p { font-size: 16px; margin: 0; }
+
+  /* Autres fonctions */
+  .features { display: grid; gap: 12px; }
+  @media (min-width: 620px) { .features { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .features { grid-template-columns: repeat(3, 1fr); } }
+  .feature { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px; }
+  .feature .ico { width: 40px; height: 40px; border-radius: 12px; background: var(--sable); display: grid; place-items: center; margin-bottom: 10px; color: var(--fil); }
+  .feature .ico svg { width: 22px; height: 22px; }
+  .feature p { margin: 0; color: var(--muted); font-size: 16px; }
+
+  /* Guide */
+  .guide { display: grid; gap: 12px; }
+  details { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 0 18px; }
+  summary { cursor: pointer; font-weight: 700; padding: 16px 0; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--fil); font-size: 22px; line-height: 1; }
+  details[open] summary::after { content: "–"; }
+  details > div { padding-bottom: 16px; color: var(--ink); }
+  details ul, details ol { margin: 0 0 8px; padding-left: 22px; }
+  details li { margin-bottom: 6px; }
+  details li::marker { color: var(--fil); }
+
+  /* Vie privée */
+  .privacy { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 28px 22px; display: grid; gap: 24px; align-items: center; }
+  @media (min-width: 760px) { .privacy { grid-template-columns: 1fr 260px; padding: 36px; } }
+  .privacy ul { margin: 0; padding-left: 22px; }
+  .privacy li { margin-bottom: 8px; }
+  .privacy li::marker { color: var(--sauge); }
+  .privacy img { border-radius: 18px; max-width: 260px; justify-self: center; }
+
+  /* Appel final */
+  .cta { text-align: center; background: var(--miel); border-radius: 28px; padding: 40px 20px; }
+  .cta p { max-width: 46ch; margin: 8px auto 22px; }
+
+  footer { padding: 32px 0 48px; color: var(--muted); font-size: 15px; }
+  footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <a class="brand" href="#top"><img src="img/icone.png" alt="" width="40" height="40">Koinonia</a>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <p class="hand">Prions ensemble</p>
+      <h1>Personne ne devrait prier seul.</h1>
+      <p class="intro">Koinonia rassemble les chrétiens francophones pour prier les uns pour les autres, garder la trace de leur chemin avec Dieu et confier en privé ce qui pèse sur le cœur.</p>
+      <a class="btn dl" href="https://github.com/webpet-creator/koinonia/releases/latest/download/koinonia.apk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        Télécharger pour Android
+      </a>
+      <div class="meta">
+        <span class="chip">Version bêta</span>
+        <span class="chip">Gratuite</span>
+        <span class="chip">Sans publicité</span>
+        <span class="chip">iPhone : bientôt</span>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="halo" aria-hidden="true"></div>
+      <img src="img/accueil-1.webp" alt="Illustration : des personnes réunies en prière" width="400" height="496">
+    </div>
+  </div>
+
+  <section id="installer" style="background: var(--card); border-block: 1px solid var(--border);">
+    <div class="wrap">
+      <h2>Installer l'appli en 4 étapes</h2>
+      <p class="lead">Pendant la bêta, l'appli ne passe pas encore par le Play Store : on l'installe à partir d'un fichier APK. C'est sans danger, ça prend deux minutes.</p>
+      <ol class="steps">
+        <li><strong>Télécharge le fichier</strong><p>Sur ton téléphone Android, touche le bouton « Télécharger pour Android ». Le fichier <em>koinonia.apk</em> arrive dans tes téléchargements.</p></li>
+        <li><strong>Ouvre-le</strong><p>Touche la notification de fin de téléchargement, ou ouvre l'appli « Fichiers » puis « Téléchargements ».</p></li>
+        <li><strong>Autorise l'installation</strong><p>Android affiche « Pour votre sécurité, l'installation d'applis inconnues est bloquée ». Touche « Paramètres », active « Autoriser depuis cette source », puis reviens en arrière.</p></li>
+        <li><strong>Installe et ouvre Koinonia</strong><p>Touche « Installer ». Si Google Play Protect te prévient, choisis « Installer quand même » : c'est normal pour une appli hors Play Store.</p></li>
+      </ol>
+      <p class="note"><strong>Mise à jour :</strong> quand une nouvelle version sort, retélécharge le fichier depuis cette page et installe-le par-dessus. Ton compte et ton mur sont conservés.</p>
+    </div>
+  </section>
+
+  <section id="decouvrir">
+    <div class="wrap">
+      <p class="hand">Trois piliers</p>
+      <h2>Ce que tu peux faire avec Koinonia</h2>
+      <p class="lead">Une appli simple, pensée pour les téléphones modestes et les connexions lentes.</p>
+      <div class="board">
+        <svg class="string" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M16 4 Q 33 14 50 5 T 84 5" fill="none" stroke="var(--fil)" stroke-width=".35" vector-effect="non-scaling-stroke" style="stroke-width:2"/></svg>
+        <article class="pin">
+          <img src="img/prie-pour-toi.webp" alt="" width="400" height="496" loading="lazy">
+          <h3>Prier les uns pour les autres</h3>
+          <p>Publie un sujet de prière, avec ton prénom, dans un cercle ou de façon anonyme. Les autres touchent « J'ai prié », « Amen » ou « Je suis avec toi », et tu sais qu'on prie pour toi. Les urgences sont mises en avant pendant 48 heures.</p>
+        </article>
+        <article class="pin">
+          <img src="img/exaucee.webp" alt="" width="400" height="496" loading="lazy">
+          <h3>Mon mur, ton aventure spirituelle</h3>
+          <p>Un tableau de notes épinglées et reliées par un fil : tes moments de prière, tes jeûnes, tes défis, ton vécu du jour et tes prières exaucées. Privé par défaut, chaque note peut être partagée si tu le souhaites.</p>
+        </article>
+        <article class="pin">
+          <img src="img/cahier.webp" alt="" width="400" height="496" loading="lazy">
+          <h3>Le cahier confidentiel</h3>
+          <p>Note en privé ce pour quoi tu demandes pardon, protégé par un code. Tu y enregistres ton temps de prière et tes jours de jeûne. Le cahier reste sur ton téléphone, chiffré, et n'est jamais envoyé à personne.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="fonctions" style="padding-top: 0;">
+    <div class="wrap">
+      <h2>Et aussi</h2>
+      <p class="lead">Tout ce qu'il faut pour prier avec d'autres, sans bruit ni distraction.</p>
+      <div class="features">
+        <div class="feature"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9" r="2.6"/><path d="M3 19c.8-3.2 3.2-5 6-5s5.2 1.8 6 5"/><path d="M15.5 14.2c2.4.1 4.5 1.6 5.2 4.3"/></svg></div><h3>Cercles</h3><p>Crée un cercle pour ta famille, ton groupe de prière ou ton église, et invite avec un code ou un lien. Les sujets restent entre vous.</p></div>
+        <div class="feature"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg></div><h3>Binôme de prière</h3><p>Chaque semaine, si tu le veux, l'appli t'associe à un frère ou une sœur, anonymement. Vous priez l'un pour l'autre et vous vous encouragez.</p></div>
+        <div class="feature"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div><h3>Jeûnes et défis</h3><p>21 jours de prière, jeûne de Daniel ou jeûne personnalisé : suivi jour par jour, verset du jour et rappels.</p></div>
+        <div class="feature"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v16H6.5A1.5 1.5 0 0 0 5 20.5Z"/><path d="M5 20.5A1.5 1.5 0 0 0 6.5 22H19"/><path d="M12 7v6M9 10h6"/></svg></div><h3>La Bible hors connexion</h3><p>La Bible Louis Segond 1910 complète, lisible sans Internet, avec un verset du jour et des versets par thème.</p></div>
+        <div class="feature"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9"/><path d="M10.3 20a2 2 0 0 0 3.4 0"/></svg></div><h3>Notifications douces</h3><p>« 5 personnes ont prié pour toi », rappels à l'heure que tu choisis, suivi de jeûne. Tout se règle, tout se coupe.</p></div>
+        <div class="feature"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></div><h3>Aide d'urgence</h3><p>Si un sujet laisse paraître une grande détresse, l'appli propose les numéros d'urgence et d'écoute de ton pays.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="guide" style="background: var(--card); border-block: 1px solid var(--border);">
+    <div class="wrap">
+      <h2>Premiers pas</h2>
+      <p class="lead">Le mode d'emploi, question par question. Touche une ligne pour l'ouvrir.</p>
+      <div class="guide">
+        <details open>
+          <summary>Créer mon compte</summary>
+          <div>
+            <ol>
+              <li>À l'ouverture, fais défiler les trois écrans d'accueil.</li>
+              <li>Choisis « Créer un compte », entre ton e-mail et un mot de passe.</li>
+              <li>Accepte la charte de la communauté : on prie, on encourage, on ne débat pas de doctrine, on ne juge pas l'église des autres, on ne demande pas d'argent.</li>
+              <li>Indique ton prénom ou un pseudo et ton pays. La ville et la photo sont facultatives.</li>
+            </ol>
+            <p class="muted">Tu peux aussi entrer en invité : tu lis les sujets et tu pries pour les autres, et tu crées un compte le jour où tu veux publier.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Publier un sujet de prière</summary>
+          <div>
+            <ol>
+              <li>Touche le bouton « + » au centre, en bas de l'écran.</li>
+              <li>Écris ton sujet et choisis une catégorie : santé, famille, couple, travail, études, finances, délivrance ou autre.</li>
+              <li>Choisis qui le voit : tout le monde avec ton prénom, un de tes cercles, ou tout le monde sans ton nom (anonyme).</li>
+              <li>Coche « Urgent » si c'est pressant, puis « Publier ».</li>
+            </ol>
+            <p class="muted">Pour protéger chacun, les messages qui contiennent un numéro de téléphone, un lien ou une demande d'argent sont vérifiés avant d'être publiés.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Prier pour quelqu'un</summary>
+          <div>
+            <p>Dans l'onglet « Prier », lis les sujets et filtre par catégorie, par pays ou par urgence. Après avoir prié, touche « J'ai prié » : la personne le saura. Tu peux aussi répondre « Amen » ou « Je suis avec toi ».</p>
+            <p>Quand ta prière est exaucée, ouvre ton sujet, marque-le « Exaucé » et ajoute ton témoignage pour encourager les autres.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Tenir mon mur</summary>
+          <div>
+            <p>Dans l'onglet « Mon mur », touche « Épingler » pour ajouter un moment de prière, ton vécu du jour ou une prière exaucée, ou ouvre « Défis et jeûnes » pour en commencer un. Chaque note est datée, et le fil les relie pour raconter ton chemin.</p>
+            <p>Ton mur est privé. Si tu veux partager un témoignage, choisis de le rendre public ou de le montrer à un cercle.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Utiliser le cahier confidentiel</summary>
+          <div>
+            <ul>
+              <li>Ouvre-le depuis « Mon mur » et choisis un code de 4 à 6 chiffres. Ne l'oublie pas : personne ne peut le retrouver pour toi.</li>
+              <li>Écris ce que tu remets à Dieu, puis note ton temps de prière et tes jours de jeûne pour cette entrée.</li>
+              <li>L'appli ne décide jamais du pardon, qui appartient à Dieu. Après un temps de prière et de jeûne, une entrée peut disparaître d'elle-même, à un moment imprévisible. Tu peux aussi la supprimer quand tu veux.</li>
+              <li><strong>Attention :</strong> le cahier n'existe que sur ton téléphone. Si tu désinstalles l'appli ou changes de téléphone, il est effacé.</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>Rejoindre un cercle ou trouver un binôme</summary>
+          <div>
+            <p>Onglet « Cercles » : crée un cercle et partage son code ou son lien, ou entre le code qu'on t'a donné.</p><p>Le binôme se trouve dans « Mon mur » : inscris-toi comme volontaire, et l'appli t'associe à quelqu'un pour la semaine.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Signaler un contenu ou bloquer quelqu'un</summary>
+          <div>
+            <p>Sur chaque sujet, tu peux signaler un contenu ou bloquer son auteur. Ton signalement reste anonyme ; après plusieurs signalements, le contenu est masqué en attendant une vérification. La personne bloquée n'est pas prévenue, et tu retrouves la liste dans ton profil.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Régler les notifications, exporter ou supprimer mon compte</summary>
+          <div>
+            <p>Touche l'icône de profil, en haut de l'écran, pour ouvrir ton profil. Tu y règles chaque notification, tu peux télécharger une copie de tes données et supprimer ton compte avec toutes ses données.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="vie-privee">
+    <div class="wrap">
+      <div class="privacy">
+        <div>
+          <p class="hand">Ta vie privée</p>
+          <h2>Ce qui est à toi reste à toi</h2>
+          <ul>
+            <li>Un sujet anonyme ne montre jamais ton nom, à personne.</li>
+            <li>Le cahier confidentiel est chiffré sur ton téléphone et n'est jamais envoyé sur Internet.</li>
+            <li>Ni numéro de téléphone, ni position GPS : seulement ton pays, et ta ville si tu veux.</li>
+            <li>Jamais de publicité, et tes données ne sont jamais vendues.</li>
+          </ul>
+          <p style="margin-top: 14px;"><a href="confidentialite.html">Lire la politique de confidentialité</a></p>
+        </div>
+        <img src="img/binome.webp" alt="" width="400" height="496" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" style="padding-top: 0;">
+    <div class="wrap">
+      <h2>Questions fréquentes</h2>
+      <div class="guide" style="margin-top: 20px;">
+        <details>
+          <summary>L'appli est-elle vraiment gratuite ?</summary>
+          <div><p>Oui. Toutes les fonctions sont gratuites et il n'y aura jamais de publicité. Plus tard, ceux qui le souhaitent pourront soutenir l'appli par un don, sans obligation.</p></div>
+        </details>
+        <details>
+          <summary>Pourquoi Android me dit que l'appli vient d'une « source inconnue » ?</summary>
+          <div><p>Parce qu'elle n'est pas encore sur le Play Store pendant la bêta. Le fichier vient directement de l'équipe de Koinonia. Télécharge-le seulement depuis cette page.</p></div>
+        </details>
+        <details>
+          <summary>Et sur iPhone ?</summary>
+          <div><p>La version iPhone arrivera avec la sortie officielle sur l'App Store. Cette page sera mise à jour.</p></div>
+        </details>
+        <details>
+          <summary>À quelle Église appartient Koinonia ?</summary>
+          <div><p>À aucune. Koinonia est ouverte à tous les chrétiens. On y prie et on s'encourage, sans débat de doctrine.</p></div>
+        </details>
+        <details>
+          <summary>Est-ce que l'appli consomme beaucoup de données ?</summary>
+          <div><p>Non. Elle est pensée pour les connexions lentes. La Bible, ton mur et ton cahier se consultent même sans Internet.</p></div>
+        </details>
+        <details>
+          <summary>J'ai trouvé un problème, à qui le dire ?</summary>
+          <div><p>Merci, c'est le but de la bêta ! Écris-nous à <a href="mailto:koinonia.priere@gmail.com">koinonia.priere@gmail.com</a> en décrivant ce que tu faisais, avec une capture d'écran si possible, et le modèle de ton téléphone.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top: 0;">
+    <div class="wrap">
+      <div class="cta">
+        <h2>Rejoins ceux qui prient</h2>
+        <p>« Là où deux ou trois sont assemblés en mon nom, je suis au milieu d'eux. » <span class="muted">Matthieu 18:20</span></p>
+        <a class="btn dl" href="https://github.com/webpet-creator/koinonia/releases/latest/download/koinonia.apk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Télécharger pour Android
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <nav>
+    <a href="confidentialite.html">Politique de confidentialité</a>
+    <a href="conditions.html">Conditions d'utilisation</a>
+    <a href="mailto:koinonia.priere@gmail.com">Contact</a>
+  </nav>
+  <p>Koinonia · Prions ensemble · Version bêta</p>
+</footer>
+
+</body>
+</html>
